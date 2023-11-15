@@ -1,22 +1,17 @@
 [
   {
-    "name": "Geshata",
-    "age": 19
+    "name": "Georgi Aprahamov",
+    "age": 19,
+    "role": "Admin"
   },
   {
-    "name": "Hristo",
-    "age": 18
+    "name": "Hristo Hristov",
+    "age": 18,
+    "role": "User"
   },
   {
-    "name": "Ivan",
-    "age": 17
-  },
-  {
-    "name": "Dimitar",
-    "age": 18
-  },
-  {
-    "name": "Qnislav",
-    "age": 20
+    "name": "Daniel Kolev",
+    "age": 14,
+    "role": "Admin"
   }
 ]

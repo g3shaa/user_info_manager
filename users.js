@@ -14,14 +14,17 @@ let users = [];
 function addUser() {
     rl.question('Enter user name: ', (name) => {
         rl.question('Enter user age: ', (age) => {
-            const user = {
-                name,
-                age: parseInt(age)
-            };
-            users.push(user);
-            saveDataToFile();
-            console.log('User added successfully!');
-            showMenu();
+            rl.question('Enter user role (User/Admin): ', (role) => {
+                const user = {
+                    name,
+                    age: parseInt(age),
+                    role: role.toLowerCase() === 'admin' ? 'Admin' : 'User'
+                };
+                users.push(user);
+                saveDataToFile();
+                console.log('User added successfully!');
+                showMenu();
+            });
         });
     });
 }
@@ -30,7 +33,7 @@ function addUser() {
 function listUsers() {
     console.log('\nList of Users:');
     users.forEach((user, index) => {
-        console.log(`${index + 1}. Name: ${user.name}, Age: ${user.age}`);
+        console.log(`${index + 1}. Name: ${user.name}, Age: ${user.age}, Role: ${user.role}`);
     });
     showMenu();
 }
@@ -42,7 +45,7 @@ function searchUser() {
         if (foundUsers.length > 0) {
             console.log('\nFound User(s):');
             foundUsers.forEach((user) => {
-                console.log(`Name: ${user.name}, Age: ${user.age}`);
+                console.log(`Name: ${user.name}, Age: ${user.age}, Role: ${user.role}`);
             });
         } else {
             console.log('User not found.');
@@ -57,14 +60,18 @@ function updateUser() {
         const userIndex = users.findIndex((user) => user.name.toLowerCase() === updateName.toLowerCase());
         if (userIndex !== -1) {
             rl.question('Enter new age: ', (newAge) => {
-                users[userIndex].age = parseInt(newAge);
-                saveDataToFile();
-                console.log('User information updated successfully!');
+                rl.question('Enter new role (User/Admin): ', (newRole) => {
+                    users[userIndex].age = parseInt(newAge);
+                    users[userIndex].role = newRole.toLowerCase() === 'admin' ? 'Admin' : 'User';
+                    saveDataToFile();
+                    console.log('User information updated successfully!');
+                    showMenu();
+                });
             });
         } else {
             console.log('User not found.');
+            showMenu();
         }
-        showMenu();
     });
 }
 
@@ -150,6 +157,25 @@ function loadDataFromFile() {
     }
 }
 
+// Function to generate and export a user report
+function generateUserReport() {
+    const reportContent = users.map((user, index) => `${index + 1}. Name: ${user.name}, Age: ${user.age}, Role: ${user.role}`).join('\n');
+    fs.writeFileSync('userReport.txt', reportContent);
+    console.log('User report generated and saved to userReport.txt.');
+    showMenu();
+}
+
+// Function to view the contents of the user report
+function viewUserReport() {
+    if (fs.existsSync('userReport.txt')) {
+        const reportContent = fs.readFileSync('userReport.txt', 'utf-8');
+        console.log('\nUser Report:\n', reportContent);
+    } else {
+        console.log('User report not found. Generate a report first.');
+    }
+    showMenu();
+}
+
 // Function to display the main menu
 function showMenu() {
     console.log('\nMenu:');
@@ -161,11 +187,13 @@ function showMenu() {
     console.log('6. Show Statistics');
     console.log('7. Sort Users');
     console.log('8. Clear All User Data');
-    console.log('9. Save Data to File');
-    console.log('10. Load Data from File');
-    console.log('11. Exit');
+    console.log('9. Generate User Report');
+    console.log('10. View User Report');
+    console.log('11. Save Data to File');
+    console.log('12. Load Data from File');
+    console.log('13. Exit');
 
-    rl.question('Enter your choice (1-11): ', (choice) => {
+    rl.question('Enter your choice (1-13): ', (choice) => {
         switch (choice) {
             case '1':
                 addUser();
@@ -192,25 +220,29 @@ function showMenu() {
                 clearUserData();
                 break;
             case '9':
+                generateUserReport();
+                break;
+            case '10':
+                viewUserReport();
+                break;
+            case '11':
                 saveDataToFile();
                 console.log('Data saved to file.');
                 showMenu();
                 break;
-            case '10':
+            case '12':
                 loadDataFromFile();
                 showMenu();
                 break;
-            case '11':
+            case '13':
                 rl.close();
                 break;
             default:
-                console.log('Invalid choice. Please enter a number between 1 and 11.');
+                console.log('Invalid choice. Please enter a number between 1 and 13.');
                 showMenu();
         }
     });
 }
-
-
 
 // Start the application
 loadDataFromFile(); // Load existing user data from the file
