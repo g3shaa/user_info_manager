@@ -210,6 +210,8 @@ function showMenu() {
     });
 }
 
+
+
 // Start the application
 loadDataFromFile(); // Load existing user data from the file
 console.log('User Information Manager\n');
